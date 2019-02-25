@@ -1,5 +1,9 @@
 # Markdown Links
 
+[Diagrama de flujo](#Diagrama-de-Flujo)
+
+[Pseudocódigo](#Pseudocódigo)
+
 ## Preámbulo
 
 [Markdown](https://es.wikipedia.org/wiki/Markdown) es un lenguaje de marcado
@@ -11,13 +15,6 @@ encontrar varios archivos en ese formato en cualquier tipo de repositorio
 Estos archivos `Markdown` normalmente contienen _links_ (vínculos/ligas) que
 muchas veces están rotos o ya no son válidos y eso perjudica mucho el valor de
 la información que se quiere compartir.
-
-Dentro de una comunidad de código abierto, nos han propuesto crear una
-herramienta usando [Node.js](https://nodejs.org/), que lea y analice archivos
-en formato `Markdown`, para verificar los links que contengan y reportar
-algunas estadísticas.
-
-![md-links](https://user-images.githubusercontent.com/110297/42118443-b7a5f1f0-7bc8-11e8-96ad-9cc5593715a6.jpg)
 
 ## Introducción
 
@@ -31,88 +28,86 @@ En este proyecto nos alejamos un poco del navegador para construir un programa
 que se ejecute usando Node.js, donde aprenderemos sobre cómo interactuar con el
 sistema archivos, con el entorno (_proceso_, _env_, _stdin/stdout/stderr_), ...
 
-## Objetivos
+## Diagrama de Flujo 
+![Sin titulo](src\img\diagrama.jpeg)
+## Pseudocódigo
+1. *evaluatePath* 
+- **Ingreso:** Ruta (string).
+- **Proceso:** Utilizar método path.isAbsolute para reconocer si la ruta es absoluta.
+- **Salida:** true/false (booleano).
 
-El objetivo práctico de este proyecto es que aprendas cómo crear tu propia
-**librería** (o biblioteca - _library_) en JavaScript.
+2. *transformToAbsPath*
+- **Ingreso:** Ruta (string).
+- **Proceso:** Utilizar método path.resolve para convertir ruta relativa a absoluta.
+- **Salida:** Ruta absoluta (string).
 
-Diseñar tu propia librería es una experiencia fundamental para cualquier
-desarrollador porque que te obliga a pensar en la interfaz (API) de tus
-_módulos_ y cómo será usado por otros developers. Debes tener especial
-consideración en peculiaridades del lenguaje, convenciones y buenas prácticas.
+16. *recognizeIfIsFile*
+- **Ingreso:** Ruta absoluta (string).
+- **Proceso:** Utilizar método fs.lstat.isFile para reconocer si es archivo.
+- **Salida:** true/false (booleano).
 
-Tópicos: [Node.js](https://nodejs.org/en/),
-[módulos (CommonJS)](https://nodejs.org/docs/latest-v0.10.x/api/modules.html),
-[file system](https://nodejs.org/api/fs.html),
-[path](https://nodejs.org/api/path.html),
-[http.get](https://nodejs.org/api/http.html#http_http_get_options_callback),
-parsing,
-[markdown](https://daringfireball.net/projects/markdown/syntax), CLI,
-[npm-scripts](https://docs.npmjs.com/misc/scripts),
-[semver](https://semver.org/), ...
+13. *getFiles*
+- **Ingreso:** Ruta absoluta (string).
+- **Proceso:** Obtener todos los archivos.
+- **Salida:** Array con las rutas de todos los archivos(array).
 
-## Consideraciones generales
+3. *getMdContent*
+- **Ingreso:** Ruta absoluta MD (string)
+- **Proceso:** Obtener el contenido del archivo markdown utilizando la libreria fs.readFile (con UTF)
+- **Salida:** Contenido(string)
 
-Este proyecto se debe "resolver" de manera individual.
+5. *convertMdToHtml*
+- **Ingreso:** Contenido (string).
+- **Proceso:** Usar librería Marked para convertir contenido a HTML.
+- **Salida:** Contenido HTML(string).
 
-La librería debe estar implementada en JavaScript para ser ejecutada con
-Node.js. **Está permitido usar librerías externas**.
+7. *extractATagAttr*
+- **Ingreso:** HTML (string)
+- **Proceso:** Utilizar librería JSDOM para: obtener href y contenido de los link y meter la información dentro de un objeto.
+- **Salida:** Información de los link(objeto)
 
-## Parte obligatoria
+8. *createArrLinkObj*
+- **Ingreso:** Información de los link(objeto).
+- **Proceso:** Crear array, ingresar objetos al array.
+- **Salida:** Array con información de links dentro de objeto(array).
 
-Tu módulo debe ser instalable via `npm install <github-user>/md-links`. Este
-módulo debe incluir tanto un _ejecutable_ que podamos invocar en la línea de
-comando como una interfaz que podamos importar con `require` para usarlo
-programáticamente.
+9. *extractHref*
+- **Ingreso:** Array con información de links dentro de objeto(array).
+- **Proceso:** Extraer href de cada objeto que está dentro del array y guardarlo en un nuevo array.
+- **Salida:** Array con href de cada link.
 
-Los tests unitarios deben cubrir un mínimo del 70% de _statements_, _functions_,
-_lines_ y _branches_. Te recomendamos explorar [Jest](https://jestjs.io/)
-para tus pruebas unitarias.
+10. *verifyLink*
+- **Ingreso:** Array con href de cada link(array).
+- **Proceso:** Utilizar método http para verificar si href es valido o no, guardar cada ok o fail dentro de un array.
+- **Salida:** Array con status de cada link(array).
 
-Para comenzar este proyecto tendrás que hacer un _fork_ y _clonar_ este
-repositorio.
+11. *addVerification*
+- **Ingreso:** Array con status de cada link(array).
+- **Proceso:** Introducir status de cada link dentro de array con información de links dentro de objeto(array).
+- Salida: Array con información de links y status dentro de objeto (array).
 
-Antes de comenzar a codear, es necesario que pensemos en la arquitectura y
-boilerplate del proyecto, por lo que `antes de que empieces tu planificacion
-y a trabajar en la funcionalidad de tu proyecto deberás de haber
-creado tu boilerplate y tus tests`. Esto debería quedar
-detallado en tu repo y haberte asegurado de haber recibido feedback de uno
-de tus coaches. Una vez hayas terminado de definir la arquitectura y los tests
-de tu proyecto estarás lista para iniciar con tu **planificacion** por lo cual
-deberas de hacer uso de una serie de _issues_ y _milestones_ para priorizar
-tus tareas y crear un _project_ para organizar el trabajo y poder hacer
-seguimiento de tu progreso.
+12. *calculateStats*
+- **Ingreso:** Array con información de links dentro de objeto o Array con informacion de links y status dentro de objeto (array).
+- **Proceso:** Calcular total de links, cuantos son únicos, y en caso a que se ingrese array con status de los links entonces calcular también los links que están rotos.
+- **Salida:** Array con estadísticas de total, unique y broken (array)
 
-Dentro de cada _milestone_ se crearán y asignarán los _issues_ que cada quien
-considere necesarios.
+## Boilerplate
+Estructura de archivos utilizada en este proyecto:
+```
+.
+├── src
+|   ├── models
+|   |    ├── links.js
+|   |    ├── stats.js
+|   |    └── validate.js
+|   ├── cli.js
+|   └── index.js
+└── test
+    ├── index.spec.js
+    └── 
 
-### JavaScript API
-
-El módulo debe poder importarse en otros scripts de Node.js y debe ofrecer la
-siguiente interfaz:
-
-#### `mdLinks(path, options)`
-
-##### Argumentos
-
-- `path`: Ruta absoluta o relativa al archivo o directorio. Si la ruta pasada es
-  relativa, debe resolverse como relativa al directorio desde donde se invoca
-  node - _current working directory_).
-- `options`: Un objeto con las siguientes propiedades:
-  * `validate`: Booleano que determina si se desea validar los links
-    encontrados.
-
-##### Valor de retorno
-
-La función debe retornar una promesa (`Promise`) que resuelva a un arreglo
-(`Array`) de objetos (`Object`), donde cada objeto representa un link y contiene
-las siguientes propiedades:
-
-- `href`: URL encontrada.
-- `text`: Texto que aparecía dentro del link (`<a>`).
-- `file`: Ruta del archivo donde se encontró el link.
-
-#### Ejemplo
+```
+#### Ejemplo de la funcionalidad de la Librería
 
 ```js
 const mdLinks = require("md-links");
@@ -151,12 +146,6 @@ $ md-links ./some/example.md
 ./some/example.md https://otra-cosa.net/algun-doc.html algún doc
 ./some/example.md http://google.com/ Google
 ```
-
-El comportamiento por defecto no debe validar si las URLs responden ok o no,
-solo debe identificar el archivo markdown (a partir de la ruta que recibe como
-argumento), analizar el archivo Markdown e imprimir los links que vaya
-encontrando, junto con la ruta del archivo donde aparece y el texto
-que hay dentro del link (truncado a 50 caracteres).
 
 #### Options
 
@@ -200,99 +189,6 @@ Unique: 3
 Broken: 1
 ```
 
-## Entregables
-
-Módulo instalable via `npm install <github-user>/md-links`. Este módulo debe
-incluir tanto un ejecutable como una interfaz que podamos importar con `require`
-para usarlo programáticamente.
-
-## Hacker edition
-
-- Puedes agregar la propiedad `line` a cada objeto `link` indicando en qué línea
-  del archivo se encontró el link.
-- Puedes agregar más estadísticas.
-- Integración continua con Travis o Circle CI.
-
-## Evaluación
-
-### Tech
-
-| Habilidad              | Nivel esperado |
-| ---------------------- | -------------- |
-| **JavaScript**         |                |
-| Estilo                 | 3              |
-| Nomenclatura/semántica | 3              |
-| Funciones/modularidad  | 4              |
-| Estructuras de datos   | 3              |
-| Tests                  | 3              |
-| **SCM**                |                |
-| Git                    | 3              |
-| GitHub                 | 3              |
-| **CS**                 |                |
-| Lógica                 | 2              |
-| Arquitectura           | 3              |
-
-### Habilidades Blandas
-
-Para este proyecto esperamos que ya hayas alcanzado el nivel 4 en todas tus
-habilidades blandas. Te aconsejamos revisar la rúbrica:
-
-| Habilidad                                                  | Nivel esperado |
-| ---------------------------------------------------------- | -------------- |
-| Planificación y organización                               | 4              |
-| Autoaprendizaje                                            | 4              |
-| Solución de Problemas                                      | 4              |
-| Dar y recibir feedback                                     | 4              |
-| Adaptabilidad                                              | 4              |
-| Trabajo en equipo (trabajo colaborativo y responsabilidad) | 4              |
-| Comunicación eficaz                                        | 4              |
-| Presentaciones                                             | 4              |
-
-## Pistas / Tips
-
-### FAQs
-
-#### ¿Cómo hago para que mi módulo sea _instalable_ desde GitHub?
-
-Para que el módulo sea instalable desde GitHub solo tiene que:
-
-- Estar en un repo público de GitHub
-- Contener un `package.json` válido
-
-Con el comando `npm install githubname/reponame` podemos instalar directamente
-desde GitHub. Ver [docs oficiales de `npm install` acá](https://docs.npmjs.com/cli/install).
-
-Por ejemplo, el [`course-parser`](https://github.com/Laboratoria/course-parser)
-que usamos para la currícula no está publicado en el registro público de NPM,
-así que lo instalamos directamente desde GitHub con el comando `npm install
-Laboratoria/course-parser`.
-
-### Sugerencias de implementación
-
-La implementación de este proyecto tiene varias partes: leer del sistema de
-archivos, recibir argumentos a través de la línea de comando, analizar texto,
-hacer consultas HTTP, ... y todas estas cosas pueden enfocarse de muchas formas,
-tanto usando librerías como implementando en VanillaJS.
-
-Por poner un ejemplo, el _parseado_ (análisis) del markdown para extraer los
-links podría plantearse de las siguientes maneras (todas válidas):
-
-- Usando un _módulo_ como [markdown-it](https://github.com/markdown-it/markdown-it),
-  que nos devuelve un arreglo de _tokens_ que podemos recorrer para identificar
-  los links.
-- Siguiendo otro camino completamente, podríamos usar
-  [expresiones regulares (`RegExp`)](https://developer.mozilla.org/es/docs/Web/JavaScript/Guide/Regular_Expressions).
-- También podríamos usar una combinación de varios _módulos_ (podría ser válido
-  transformar el markdown a HTML usando algo como [marked](https://github.com/markedjs/marked)
-  y de ahí extraer los link con una librería de DOM como [JSDOM](https://github.com/jsdom/jsdom)
-  o [Cheerio](https://github.com/cheeriojs/cheerio) entre otras).
-- Usando un _custom renderer_ de [marked](https://github.com/markedjs/marked)
-  (`new marked.Renderer()`).
-
-No dudes en consultar a tus compañeras, coaches y/o el [foro de la comunidad](http://community.laboratoria.la/c/js)
-si tienes dudas existenciales con respecto a estas decisiones. No existe una
-"única" manera correcta :wink:
-
 ### Tutoriales / NodeSchool workshoppers
 
 - [learnyounode](https://github.com/workshopper/learnyounode)
@@ -319,38 +215,3 @@ si tienes dudas existenciales con respecto a estas decisiones. No existe una
 - [Leer un directorio](https://nodejs.org/api/fs.html#fs_fs_readdir_path_options_callback)
 - [Path](https://nodejs.org/api/path.html)
 - [Linea de comando CLI](https://medium.com/netscape/a-guide-to-create-a-nodejs-command-line-package-c2166ad0452e)
-
-## Checklist
-
-### General
-
-- [ ] Puede instalarse via `npm install --global <github-user>/md-links`
-- [ ] Crear un script en el `package.json` que transforme el codigo ES6+ a ES5.
-
-### `README.md`
-
-- [ ] Colocar el *pseudo codigo* o *diagrama de flujo* con el algoritmo que
-  soluciona el problema.
-- [ ] Un board con el backlog para la implementación de la librería.
-- [ ] Documentación técnica de la librería.
-- [ ] Guía de uso e instalación de la librería
-
-### API `mdLinks(path, opts)`
-
-- [ ] El módulo exporta una función con la interfaz (API) esperada.
-- [ ] Implementa soporte para archivo individual
-- [ ] Implementa soporte para directorios
-- [ ] Implementa `options.validate`
-
-### CLI
-
-- [ ] Expone ejecutable `md-links` en el path (configurado en `package.json`)
-- [ ] Se ejecuta sin errores / output esperado
-- [ ] Implementa `--validate`
-- [ ] Implementa `--stats`
-
-### Pruebas / tests
-
-- [ ] Pruebas unitarias cubren un mínimo del 70% de statements, functions,
-  lines, y branches.
-- [ ] Pasa tests (y linters) (`npm test`).
