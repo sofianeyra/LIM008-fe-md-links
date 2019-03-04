@@ -1,128 +1,106 @@
-import {
-  evaluatePath,
-  transformToAbsPath,
-  recognizeIfItsFile,
-  getFiles,
-  getMdContent,
-  convertMdToHtml,
-  extractATagAttr,
-  createArrLinkObj
+import {evaluatePath, 
+  convertToAbsolutePath, 
+  getFiles, getMdContent, 
+  convertToHTML,
 } from '../src/models/links.js';
-
 import {
-  extractHref,
-  verifyLink,
-  addVerification
+  extractHref, verifyLink, addVerification
 } from '../src/models/validate.js';
 
-import {calculateStats} from '../src/models/stats.js';
+import {
+  calculateStats
+} from '../src/models/stats.js';
 
-const inputTrue = 'C:/absolutePath/archivo.md'; 
-const inputFalse = '../relativePath/archivo.md';
+const path = require('path'); 
+
+const inputFile = 'D:\\Proyects\\LIM008-fe-md-links\\proof\\text2.md';
+const inputDirectory = 'D:\\Proyects\\LIM008-fe-md-links\\proof\\';
 
 describe('evaluatePath', () => {
   it('should be a function', () => {
     expect(typeof evaluatePath).toBe('function');
   });
   it('should return a boolean value', () => {
-    expect(evaluatePath(inputTrue)).browser;
+    expect(evaluatePath('c:\\absolute-path')).toEqual(true);
   });
-  /* it('debería retornar true con inputTrue', () => {
-     expect(evaluatePath(inputTrue)).toEqual(true);
-    });
-  it('debería retornar false con inputFalse', () => {
-     expect(evaluatePath(inputFalse)).toEqual(false);
-    });    
-  }); */
-  describe('transformToAbsPath', () => {
-    it('it should be a function', () => {
-      expect(typeof transformToAbsPath).toBe('function');
-    });
-    it('debería retornar un valor string', () => {
-      expect(typeof transformToAbsPath(inputTrue)).toBe('string');
-    });
+  it('should return false if its a relative path', () => {
+    expect(evaluatePath('.\\relative-path')).toEqual(false);
   });
-  describe('recognizeIfItsFile', () => {
-    it('it should be a function', () => {
-      expect(typeof recognizeIfItsFile).toBe('function');
-    });
-    it('should return a boolean value', () => {
-      expect(recognizeIfItsFile(inputTrue)).browser;
-    });
+  it('should return a string value', () => {
+    expect(typeof convertToAbsolutePath('.\\relative-path')).toBe('string');
   });
-  describe('getFiles', () => {
-    it('it should be a function', () => {
-      expect(typeof getFiles).toBe('function');
-    });
-    it('debería retornar un array', () => {
-      expect(typeof getFiles(inputTrue)).toBe('object');
-    });
+});
+
+describe('transformToAbsolutePath', () => {
+  it('should be a function', () => {
+    expect(convertToAbsolutePath('.\\relative-path')).toEqual(path.normalize('D:\\Proyects\\LIM008-fe-md-links\\relative-path'));
   });
- 
-  describe('getMdContent', () => {
-    it('should be a function', () => {
-      expect(typeof getMdContent).toBe('function');
-    });
-    it('should return a string', () => {
-      expect(typeof getMdContent(inputTrue)).toBe('string');
-    });
+  it('should return a string value', () => {
+    expect(typeof convertToAbsolutePath(inputFile)).toBe('string');
   });
-  describe('convertMdToHtml', () => {
-    it('should be a function', () => {
-      expect(typeof convertMdToHtml).toBe('function');
-    });
-    it('should return a string', () => {
-      expect(typeof convertMdToHtml('contenido MD')).toBe('string');
-    });
+});
+
+describe('getFiles', () => {
+  it('it should be a function', () => {
+    expect(typeof getFiles).toBe('function');
   });
-  describe('extractATagAttr', () => {
-    it('should be a function', () => {
-      expect(typeof extractATagAttr).toBe('function');
-    });
-    it('should return an object', () => {
-      expect(typeof extractATagAttr('contenido HTML')).toBe('object');
-    });
+  it('it should return an object', () => {
+    expect(typeof getFiles(inputDirectory)).toBe('object');
   });
-  describe('createArrLinkObj', () => {
-    it('should be a function', () => {
-      expect(typeof createArrLinkObj).toBe('function');
-    });
-    it('should return an array', () => {
-      expect(typeof createArrLinkObj({href: 'link', text: 'text', file: 'path'})).toBe('object');
-    });
+});
+
+describe('get Md Content', () => {
+  it('it should be a function', () => {
+    expect(typeof getMdContent).toBe('function');
   });
-  describe('extractHref', () => {
-    it('should be a function', () => {
-      expect(typeof extractHref).toBe('function');
-    });
-    it('should return an array', () => {
-      expect(typeof extractHref([{href: 'link', text: 'text', file: 'path'}])).toBe('object');
-    });
+  it('it should return a string', () => {
+    expect(typeof getMdContent(inputFile)).toBe('string');
   });
-  describe('verifyLink', () => {
-    it('should be a function', () => {
-      expect(typeof verifyLink).toBe('function');
-    });
-    it('should return an array', () => {
-      expect(typeof verifyLink(['href1', 'href2', 'href3'])).toBe('object');
-    });
+});
+
+describe('convertToHTML', () => {
+  it('should be a function', () => {
+    expect(typeof convertToHTML).toBe('function');
   });
-  describe('addVerification', () => {
-    it('should be a function', () => {
-      expect(typeof addVerification).toBe('function');
-    });
-    it('should return an array', () => {
-      expect(typeof addVerification(['href1', 'href2', 'href3'])).toBe('object');
-    });
+  it('should return an object', () => {
+    expect(typeof convertToHTML(inputFile)).toBe('object');
   });
-  describe('calculateStats', () => {
-    it('should be a function', () => {
-      expect(typeof calculateStats).toBe('function');
-    });
-    it('should return an array', () => {
-      expect(typeof calculateStats(
-        [{href: 'link', text: 'text', file: 'path'}]
-      )).toBe('object');
-    });
+});
+console.log(convertToHTML(inputFile));
+describe('extractHref', () => {
+  it('should be a function', () => {
+    expect(typeof extractHref).toBe('function');
+  });
+  it('should return an array', () => {
+    expect(typeof extractHref([{href: 'href', path: 'path', title: 'title', text: 'text'}])).toBe('object');
+  });
+});
+
+describe('verifyLink', () => {
+  it('should be a function', () => {
+    expect(typeof verifyLink).toBe('function');
+  });
+  it('should return an array', () => {
+    expect(typeof verifyLink(['href1', 'href2', 'href3'])).toBe('object');
+  });
+});
+
+describe('addVerification', () => {
+  it('should be a function', () => {
+    expect(typeof addVerification).toBe('function');
+  });
+  it('should return an array', () => {
+    expect(typeof addVerification(['href1', 'href2', 'href3'])).toBe('object');
+  });
+});
+
+describe('calculateStats', () => {
+  it('should be a function', () => {
+    expect(typeof calculateStats).toBe('function');
+  });
+  it('should return an array', () => {
+    expect(typeof calculateStats(
+      [{href: 'link', text: 'text', file: 'path'}]
+    )).toBe('object');
   });
 });

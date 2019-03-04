@@ -1,58 +1,56 @@
+// calling modules
+const myPath = require('path'); 
+const fs = require('fs'); 
+const marked = require('marked'); 
+
 export const evaluatePath = (path) => {
-  if (path.isAbsolute) return true;
-  else return false;
-};
-    
-export const transformToAbsPath = (path) => {
-  const relativePath = path;
-  const absolutePath = 'C:/absolutePath/file.md';
-  return absolutePath;
-};
-    
-export const recognizeIfItsFile = (pathAbs) => {
-  if (pathAbs) return true;
-  else return false;
-};
-    
-export const getFiles = (pathAbs) => {
-  if (pathAbs) {
-    const arrPath = ['path1', 'path2'];
-    return arrPath;
-  }
-};
-    
-export const getMdContent = (pathAbsolute) => {
-  if (pathAbsolute) {
-    const content = 'md content';
-    return content;
-  }
-};
-    
-export const convertMdToHtml = (content) => {
-  if (content) {
-    const htmlContent = 'some HTML content';
-    return htmlContent;
-  }
+  const typeOfPath = myPath.isAbsolute(path);
+  return typeOfPath;
 };
 
-export const extractATagAttr = (htmlstring) => {
-  if (htmlstring) {
-    const attrLinks = {
-      href: 'link',
-      text: 'text',
-      file: 'path',
-    };
-    return attrLinks;
-  }
+export const IsFile = (pathAbs) => {
+  const typeFile = fs.statSync(pathAbs).isFile();
+  return typeFile;
 };
-    
-export const createArrLinkObj = (attrLinks) => {
-  if (attrLinks) {
-    const arrObjInfLinks = [{
-      href: 'link',
-      text: 'text',
-      file: 'path',
-    }];
-    return arrObjInfLinks;
-  }
+
+export const convertToAbsolutePath = (path) => {
+  const absolutePath = myPath.resolve(path);
+  return absolutePath;
+};
+
+export const getFiles = (absolutePath) => {
+  let files = fs.readdirSync(absolutePath);
+  files.forEach((element) => {
+    let currentFile = myPath.join(absolutePath, element);
+    if (fs.statSync(currentFile).isFile() && myPath.extname(currentFile) === '.md') {
+      files.push(currentFile);
+    } else if (fs.statSync(currentFile).isDirectory()) {
+      getFiles(currentFile);
+    }
+  });
+  return files;
+};
+
+export const getMdContent = (absolutePath) => {
+  const contents = fs.readFileSync(absolutePath, 'utf8');
+  return contents;
+};
+
+export const route = 'D:\\Proyects\\LIM008-fe-md-links\\proof\\text2.md';
+export const convertToHTML = (route) => {
+  const file = fs.readFileSync(route, 'utf8');
+  // Return links in an array
+  const links = [];
+  const renderer = new marked.Renderer();
+
+  renderer.link = (href, title, text, route) => {
+    links.push({
+      href: href,
+      text: text,
+      title: title,
+      route: route,
+    });
+  };
+  marked(file, {renderer: renderer});
+  return links;
 };
