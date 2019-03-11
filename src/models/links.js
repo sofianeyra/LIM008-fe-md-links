@@ -8,13 +8,13 @@ export const evaluatePath = (path) => {
   return typeOfPath;
 };
 
-export const IsFile = (pathAbs) => {
-  const typeFile = fs.statSync(pathAbs).isFile();
+export const IsFile = (absolutePath) => {
+  const typeFile = fs.statSync(absolutePath).isFile();
   return typeFile;
 };
 
 export const convertToAbsolutePath = (path) => {
-  const absolutePath = myPath.resolve(path);
+  let absolutePath = myPath.resolve(path);
   return absolutePath;
 };
 
@@ -36,21 +36,19 @@ export const getMdContent = (absolutePath) => {
   return contents;
 };
 
-export const route = 'D:\\Proyects\\LIM008-fe-md-links\\proof\\text2.md';
-export const convertToHTML = (route) => {
-  const file = fs.readFileSync(route, 'utf8');
-  // Return links in an array
-  const links = [];
+export const extractLinks = (absolutePath) => {
+  const file = fs.readFileSync(absolutePath, 'utf8');
+  let links = [];
   const renderer = new marked.Renderer();
-
-  renderer.link = (href, title, text, route) => {
+  renderer.link = (href, title, text) => {
     links.push({
       href: href,
-      text: text,
-      title: title,
-      route: route,
+      text: text.slice(0, 50),
+      path: absolutePath,
     });
   };
   marked(file, {renderer: renderer});
   return links;
 };
+
+
