@@ -1,7 +1,6 @@
 # Markdown Links
 
 [Diagrama de flujo](#Diagrama-de-Flujo)
-
 [Pseudocódigo](#Pseudocódigo)
 
 ## Preámbulo

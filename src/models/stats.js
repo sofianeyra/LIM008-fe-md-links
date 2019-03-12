@@ -9,16 +9,23 @@ export const calculateUniqueLinks = (arrLinks) => {
 };
   
 export const calculateBrokenLinks = (arrObj) => {
-  const brokenLinks = (arrObj.filter(links => (links.value === 'Fail'))).length;
-  return brokenLinks;
+  const brokenLinks = (arrObj.filter(links => (links.value === 'Fail')));
+  return brokenLinks.length;
 };
   
-export const calculateStats = (arrLinks, option) => {
+export const calculateStats = (arrLinks) => {
   let result;
-  if (option === 'validate') {
-    result = `Total: ${arrLinks.length}, Unique: ${calculateUniqueLinks(arrLinks)}, Broken: ${calculateBrokenLinks(arrLinks)}`;
-  } else {
-    result = `Total: ${arrLinks.length}, Unique: ${calculateUniqueLinks(arrLinks)}`;
-  }
+  result = {
+    total: arrLinks.length, 
+    unique: calculateUniqueLinks(arrLinks)};
+  return result;
+};
+
+export const calculateValidateStats = (arrLinks) => {
+  let result;
+  result = {
+    total: arrLinks.length, 
+    unique: calculateUniqueLinks(arrLinks), 
+    broken: calculateBrokenLinks(arrLinks)};
   return result;
 };

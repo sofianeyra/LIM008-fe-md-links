@@ -1,6 +1,6 @@
 // calling modules
-const myPath = require('path'); 
-const fs = require('fs'); 
+const fs = require('fs');
+const myPath = require('path');
 const marked = require('marked'); 
 
 export const evaluatePath = (path) => {
@@ -8,47 +8,46 @@ export const evaluatePath = (path) => {
   return typeOfPath;
 };
 
-export const IsFile = (absolutePath) => {
-  const typeFile = fs.statSync(absolutePath).isFile();
-  return typeFile;
-};
-
 export const convertToAbsolutePath = (path) => {
   let absolutePath = myPath.resolve(path);
   return absolutePath;
 };
 
-export const getFiles = (absolutePath) => {
-  let files = fs.readdirSync(absolutePath);
-  files.forEach((element) => {
-    let currentFile = myPath.join(absolutePath, element);
-    if (fs.statSync(currentFile).isFile() && myPath.extname(currentFile) === '.md') {
-      files.push(currentFile);
-    } else if (fs.statSync(currentFile).isDirectory()) {
-      getFiles(currentFile);
+export const getFiles = (pathDirOrFile) => {
+  let arrFiles = [];
+  const statFile = fs.lstatSync(pathDirOrFile);
+  if (statFile.isFile()) {
+    const fileMd = verifyExtName(pathDirOrFile);
+    if (fileMd) {
+      arrFiles.push(pathDirOrFile);
     }
-  });
-  return files;
-};
-
-export const getMdContent = (absolutePath) => {
-  const contents = fs.readFileSync(absolutePath, 'utf8');
-  return contents;
-};
-
-export const extractLinks = (absolutePath) => {
-  const file = fs.readFileSync(absolutePath, 'utf8');
-  let links = [];
-  const renderer = new marked.Renderer();
-  renderer.link = (href, title, text) => {
-    links.push({
-      href: href,
-      text: text.slice(0, 50),
-      path: absolutePath,
+  } else if (statFile.isDirectory()) {
+    const files = fs.readdirSync(pathDirOrFile);
+    files.forEach(file => {
+      arrFiles = arrFiles.concat(getFiles(myPath.join(`${pathDirOrFile}`, `${file}`)));
     });
-  };
-  marked(file, {renderer: renderer});
+  }
+  return arrFiles;
+};
+
+export const verifyExtName = (nameFile) => {
+  const extMd = /\.(md|mkdn|mdown|markdown?)$/i;
+  return extMd.test(myPath.extname(nameFile));
+};
+
+export const extractLinks = (arrFiles) => {
+  const links = [];
+  const getLinks = arrFiles.forEach(file => {
+    const dataFile = fs.readFileSync(file, 'utf8');
+    const renderer = new marked.Renderer();
+    renderer.link = (href, title, text) => {
+      links.push({
+        href: href,
+        text: text.slice(0, 50),
+        path: file
+      });
+    };
+    marked(dataFile, { renderer: renderer });
+  });
   return links;
 };
-
-

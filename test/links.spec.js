@@ -1,14 +1,13 @@
 import {evaluatePath, 
-  IsFile,
   convertToAbsolutePath, 
-  getFiles, getMdContent, 
+  verifyExtName,
+  getFiles,
   extractLinks,
 } from '../src/models/links.js';
 
 const path = require('path');
 // examples to test
-const inputFile = 'D:\\Proyects\\LIM008-fe-md-links\\proof\\text2.md';
-const inputFile2 = 'D:\\Proyects\\LIM008-fe-md-links\\proof\\directory\\text1.md';
+const inputFile = 'D:/Proyects\\LIM008-fe-md-links\\proof\\text2.md';
 const inputDirectory = 'D:\\Proyects\\LIM008-fe-md-links\\proof\\';
 
 describe('evaluatePath', () => {
@@ -35,12 +34,12 @@ describe('convert to AbsolutePath', () => {
   });
 });
 
-describe('Is a file', () => {
-  it('it should be a function', () => {
-    expect(typeof IsFile).toBe('function');
+describe('verify extension name', () => {
+  it('should be a function', () => {
+    expect(typeof verifyExtName).toBe('function');
   });
-  it('it should be a boolean', () => {
-    expect(typeof IsFile(inputFile)).toBe('boolean');
+  it('should return a boolean value', () => {
+    expect(typeof verifyExtName(inputFile)).toEqual('boolean');
   });
 });
 
@@ -53,20 +52,8 @@ describe('getFiles of the directory', () => {
   });
 });
 
-describe('get Md Content from a file', () => {
-  it('it should be a function', () => {
-    expect(typeof getMdContent).toBe('function');
-  });
-  it('it should return a string', () => {
-    expect(typeof getMdContent(inputFile)).toBe('string');
-  });
-});
-
-describe('convert Md content To HTML', () => {
+describe('get links from marked renderer', () => {
   it('should be a function', () => {
     expect(typeof extractLinks).toBe('function');
-  });
-  it('should return an object', () => {
-    expect(typeof extractLinks(inputFile)).toBe('object');
   });
 });

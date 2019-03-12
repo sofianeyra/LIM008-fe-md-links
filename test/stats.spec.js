@@ -1,8 +1,9 @@
 // calling functions
 import {
   calculateStats,
+  calculateValidateStats,
   calculateUniqueLinks,
-  calculateBrokenLinks
+  calculateBrokenLinks,
 } from '../src/models/stats.js';
 
 const input = [{
@@ -22,18 +23,18 @@ const input = [{
   status: 404,
   value: 'Fail'
 }];
-const output = 'Total: 4, Unique: 3';
-const outputValidate = 'Total: 4, Unique: 3, Broken: 1';
+const output = {total: 4, unique: 3};
+const outputValidate = {total: 4, unique: 3, broken: 1};
 
 describe('calculate stats ', () => {
   it('should be a function', () => {
     expect(typeof calculateStats).toBe('function');
   });
   it('should return total and unique links', () => {
-    expect(calculateStats(input)).toBe(output);
+    expect(calculateStats(input)).toEqual(output);
   });
   it('should return total and unique links', () => {
-    expect(calculateStats(input, 'validate')).toBe(outputValidate);
+    expect(calculateValidateStats(input)).toEqual(outputValidate);
   });
 });
 

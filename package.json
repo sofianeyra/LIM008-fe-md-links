@@ -1,20 +1,26 @@
 {
-  "name": "social-network",
+  "name": "md-links",
   "version": "1.0.0",
-  "description": "Social Network @ Laboratoria",
-  "main": "src/index.html",
+  "description": "Get links from markdown files, validate and take stats of them.",
+  "repository": "https://github.com/sofianeyra/LIM008-fe-md-links",
+  "main": "index.js",
   "keywords": [
     "javascript",
     "npm",
     "jest"
   ],
   "license": "MIT",
+  "bin": {
+    "say-hello": "./cli.js"
+  },
   "scripts": {
     "eslint": "eslint --ext .js src/ test/",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "build": "babel src -d lib"
   },
   "devDependencies": {
-    "@babel/core": "^7.2.2",
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.4",
     "@babel/plugin-transform-modules-commonjs": "^7.2.0",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^24.1.0",
@@ -22,5 +28,12 @@
     "eslint-plugin-jest": "^22.1.2",
     "jest": "^24.1.0",
     "regenerator-runtime": "^0.13.1"
+  },
+  "dependencies": {
+    "babel": "^6.23.0",
+    "commander": "^2.19.0",
+    "jsdom": "^13.2.0",
+    "marked": "^0.6.1",
+    "node-fetch": "^2.3.0"
   }
 }
