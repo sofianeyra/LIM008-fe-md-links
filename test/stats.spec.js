@@ -51,5 +51,3 @@ describe('calculate unique links', () => {
     expect(calculateUniqueLinks(input)).toBe(3);
   });
 });
-
-console.log(calculateUniqueLinks(input));
