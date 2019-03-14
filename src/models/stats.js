@@ -13,8 +13,20 @@ export const calculateBrokenLinks = (arrLinks) => {
   return brokenLinks.length;
 };
 
-export const calculateTotalLinks = (arrLinks) => {
-  const totalLinks = arrLinks.length;
-  return totalLinks;
+export const calculateStats = (arrObj, condition) => {
+  const valid = condition;
+  let result;
+  if (valid === 'validate') {
+    result = `
+       Total: ${arrObj.length}
+       Unique: ${calculateUniqueLinks(arrObj)}
+       Broken: ${calculateBrokenLinks(arrObj)}
+        `;
+  } else {
+    result = `
+        Total: ${arrObj.length}
+        Unique: ${calculateUniqueLinks(arrObj)}
+     `;
+  }
+  return result;
 };
-

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { mdLinks } from './index.js';
-import {calculateTotalLinks, calculateUniqueLinks, calculateBrokenLinks} from './models/stats.js';
+import {calculateStats} from './models/stats.js';
 
 const args = process.argv.slice(2);
 const options = {validate: false, stats: false};
@@ -29,7 +29,7 @@ if (args.length === 2) {
   } else if (args[1] === '--stats') {
     options.stats = true;
     mdLinks(path, options)
-      .then(resp => resp.forEach(element => console.log(` Total: ${calculateTotalLinks(element)}\n Unique: ${calculateUniqueLinks(element)}\n`)))
+      .then(resp => console.log(calculateStats(resp)))
       .catch(err => console.log(err));
   } 
 }; 
@@ -40,13 +40,13 @@ if (args.length === 3) {
     options.validate = true;
     options.stats = true;
     mdLinks(path, options)
-      .then(resp => resp.forEach(element => console.log(`Total: ${calculateTotalLinks(element)}\n Unique: ${calculateUniqueLinks(element)}\n Broken: ${calculateBrokenLinks(element)}\n`)))
+      .then(resp => console.log(calculateStats(resp, 'validate')))
       .catch(err => console.log(err));
   } else if ((args[1] === '--stats' || args[1] === '--s') && (args[2] === '--validate' || args[2] === '--v')) {
     options.validate = true;
     options.stats = true;
     mdLinks(path, options)
-      .then(resp => resp.forEach(element => console.log(`Total: ${calculateTotalLinks(element)}\n Unique: ${calculateUniqueLinks(element)}\n Broken: ${calculateBrokenLinks(element)}\n`)))
+      .then(resp => console.log(calculateStats(resp, 'validate')))
       .catch(err => console.log(err));
   }
 };

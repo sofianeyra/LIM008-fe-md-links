@@ -2,7 +2,6 @@
 import {
   convertToAbsolutePath,
   extractLinks, 
-  getFiles,
 } from './models/links.js';
 import {
   verifyLinks
