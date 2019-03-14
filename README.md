@@ -21,7 +21,7 @@ ya sea tu máquina o un servidor, lo cual nos abre las puertas para poder
 interactuar con el sistema en sí, archivos, redes, ...
 
 
-## Diagrama de Flujo (falta modificar)
+## Diagrama de Flujo 
 ![Sin titulo](src\img\diagrama.jpeg)
 ## Pseudocódigo
 1. *evaluatePath* 
