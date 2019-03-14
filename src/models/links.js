@@ -13,31 +13,35 @@ export const convertToAbsolutePath = (path) => {
   return absolutePath;
 };
 
-export const getFiles = (pathDirOrFile) => {
+export const isADirectory = (route) => {
+  const thePath = fs.lstatSync(route).isDirectory();
+  return thePath;
+};
+
+export const getFiles = (route) => {
+  const applyDirStats = isADirectory(route);
   let arrFiles = [];
-  const statFile = fs.lstatSync(pathDirOrFile);
-  if (statFile.isFile()) {
-    const fileMd = verifyExtName(pathDirOrFile);
-    if (fileMd) {
-      arrFiles.push(pathDirOrFile);
-    }
-  } else if (statFile.isDirectory()) {
-    const files = fs.readdirSync(pathDirOrFile);
-    files.forEach(file => {
-      arrFiles = arrFiles.concat(getFiles(myPath.join(`${pathDirOrFile}`, `${file}`)));
+  if (applyDirStats === false) {
+    arrFiles.push(route);
+  } else { 
+    const file = fs.readdirSync(route);
+    file.forEach((element) => {
+      const childOfDir = myPath.join(route, element);
+      const stats = fs.lstatSync(childOfDir);
+      if (stats.isDirectory()) {
+        arrFiles = arrFiles.concat(getFiles(childOfDir));
+      } else { 
+        arrFiles.push(childOfDir);
+      }
     });
   }
   return arrFiles;
 };
 
-export const verifyExtName = (nameFile) => {
-  const extMd = /\.(md|mkdn|mdown|markdown?)$/i;
-  return extMd.test(myPath.extname(nameFile));
-};
-
-export const extractLinks = (arrFiles) => {
+export const extractLinks = (AllFiles) => {
   const links = [];
-  const getLinks = arrFiles.forEach(file => {
+  const getLinks = getFiles(AllFiles);
+  getLinks.forEach(file => {
     const dataFile = fs.readFileSync(file, 'utf8');
     const renderer = new marked.Renderer();
     renderer.link = (href, title, text) => {

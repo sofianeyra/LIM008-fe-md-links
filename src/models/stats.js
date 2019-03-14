@@ -7,25 +7,14 @@ export const calculateUniqueLinks = (arrLinks) => {
   }, []);
   return uniqueLinks.length;
 };
-  
-export const calculateBrokenLinks = (arrObj) => {
-  const brokenLinks = (arrObj.filter(links => (links.value === 'Fail')));
+
+export const calculateBrokenLinks = (arrLinks) => {
+  const brokenLinks = (arrLinks.filter(links => (links.value === 'Fail')));
   return brokenLinks.length;
 };
-  
-export const calculateStats = (arrLinks) => {
-  let result;
-  result = {
-    total: arrLinks.length, 
-    unique: calculateUniqueLinks(arrLinks)};
-  return result;
+
+export const calculateTotalLinks = (arrLinks) => {
+  const totalLinks = arrLinks.length;
+  return totalLinks;
 };
 
-export const calculateValidateStats = (arrLinks) => {
-  let result;
-  result = {
-    total: arrLinks.length, 
-    unique: calculateUniqueLinks(arrLinks), 
-    broken: calculateBrokenLinks(arrLinks)};
-  return result;
-};
