@@ -1,9 +1,8 @@
 // calling functions
 import {
-  calculateStats,
-  calculateValidateStats,
   calculateUniqueLinks,
   calculateBrokenLinks,
+  calculateTotalLinks,
 } from '../src/models/stats.js';
 
 const input = [{
@@ -26,15 +25,12 @@ const input = [{
 const output = {total: 4, unique: 3};
 const outputValidate = {total: 4, unique: 3, broken: 1};
 
-describe('calculate stats ', () => {
+describe('calculate total links', () => {
   it('should be a function', () => {
-    expect(typeof calculateStats).toBe('function');
+    expect(typeof calculateTotalLinks).toBe('function');
   });
-  it('should return total and unique links', () => {
-    expect(calculateStats(input)).toEqual(output);
-  });
-  it('should return total and unique links', () => {
-    expect(calculateValidateStats(input)).toEqual(outputValidate);
+  it('should return the amount of total links', () => {
+    expect(calculateTotalLinks(input)).toBe(4);
   });
 });
 
@@ -43,7 +39,7 @@ describe('calculate broken links', () => {
     expect(typeof calculateBrokenLinks).toBe('function');
   });
   it('should return the amount of broken links', () => {
-    expect(typeof calculateBrokenLinks(input)).toEqual('number');
+    expect(calculateBrokenLinks(input)).toBe(1);
   });
 });
 
@@ -51,8 +47,9 @@ describe('calculate unique links', () => {
   it('should be a function', () => {
     expect(typeof calculateUniqueLinks).toBe('function');
   });
-  it('should return the amount of broken links', () => {
-    expect(typeof calculateUniqueLinks(input)).toEqual('number');
+  it('should return the amount of unique links', () => {
+    expect(calculateUniqueLinks(input)).toBe(3);
   });
 });
 
+console.log(calculateUniqueLinks(input));
